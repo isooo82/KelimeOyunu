@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Quest - Local 2-Player</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Game Header -->
+        <header class="game-header">
+            <div class="logo">
+                <i class="fas fa-spell-check"></i>
+                <h1>Word Quest</h1>
+                <span class="mode-badge">Local 2-Player</span>
+            </div>
+            <div class="round-info">
+                <span class="current-round" id="currentRound">Round 1/6</span>
+                <span class="word-length" id="wordLength">4 Letters</span>
+            </div>
+        </header>
+
+        <!-- Setup Screen -->
+        <div class="screen setup-screen active" id="setupScreen">
+            <div class="lobby-content">
+                <h2>🎮 Local 2-Player Setup</h2>
+                <div class="players-setup">
+                    <div class="player-setup">
+                        <h3>👤 Player 1</h3>
+                        <input type="text" id="player1Name" placeholder="Enter Player 1 name" maxlength="20">
+                    </div>
+                    <div class="player-setup">
+                        <h3>👤 Player 2</h3>
+                        <input type="text" id="player2Name" placeholder="Enter Player 2 name" maxlength="20">
+                    </div>
+                </div>
+                <button id="startLocalBtn" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Start Local Game!
+                </button>
+                <div class="info-section">
+                    <h3>🎯 How Local 2-Player Works:</h3>
+                    <ul style="text-align: left; margin: 1rem 0; color: rgba(255,255,255,0.9);">
+                        <li>👥 Both players use the same computer</li>
+                        <li>🔄 Take turns answering questions</li>
+                        <li>⏰ Each player gets their own 4-minute timer</li>
+                        <li>🏆 Compete for the highest score</li>
+                        <li>🤝 Pass the computer after each question</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen game-screen" id="gameScreen">
+            <div class="game-content">
+                <!-- Current Player Banner -->
+                <div class="current-player-banner" id="currentPlayerBanner">
+                    <h2>🎯 <span id="currentPlayerName">Player 1</span>'s Turn</h2>
+                    <p>Pass the computer to the current player!</p>
+                </div>
+
+                <!-- Question Section -->
+                <div class="question-section">
+                    <div class="question-card">
+                        <div class="question-header">
+                            <h3>Find the word:</h3>
+                            <div class="timer-container">
+                                <i class="fas fa-clock"></i>
+                                <span class="main-timer" id="mainTimer">4:00</span>
+                            </div>
+                        </div>
+                        <p class="question-text" id="questionText">Loading question...</p>
+                        <div class="word-length-indicator">
+                            <span class="letter-count" id="letterCount">4</span> letters
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Players Score Display -->
+                <div class="players-score-section">
+                    <div class="player-score-card" id="player1Card">
+                        <h3 id="player1NameDisplay">Player 1</h3>
+                        <div class="score">Score: <span id="player1Score">0</span></div>
+                        <div class="timer">Time: <span id="player1Timer">4:00</span></div>
+                        <div class="status" id="player1Status">Waiting</div>
+                    </div>
+                    <div class="player-score-card" id="player2Card">
+                        <h3 id="player2NameDisplay">Player 2</h3>
+                        <div class="score">Score: <span id="player2Score">0</span></div>
+                        <div class="timer">Time: <span id="player2Timer">4:00</span></div>
+                        <div class="status" id="player2Status">Waiting</div>
+                    </div>
+                </div>
+
+                <!-- Answer Section -->
+                <div class="answer-section">
+                    <div class="hint-system">
+                        <button id="getHintBtn" class="btn btn-hint">
+                            <i class="fas fa-lightbulb"></i> Get Letter Hint
+                        </button>
+                        <div class="hints-display" id="hintsDisplay">
+                            <span class="hint-letter hidden">-</span>
+                            <span class="hint-letter hidden">-</span>
+                            <span class="hint-letter hidden">-</span>
+                            <span class="hint-letter hidden">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="answer-input">
+                        <input type="text" id="answerInput" placeholder="Enter your answer..." maxlength="10">
+                        <button id="submitAnswerBtn" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Submit
+                        </button>
+                    </div>
+
+                    <div class="found-button-container">
+                        <button id="foundBtn" class="btn btn-found">
+                            <i class="fas fa-lightbulb"></i> Found! (Start 30s Timer)
+                        </button>
+                        <div class="personal-timer-display" id="personalTimerDisplay" style="display: none;">
+                            <i class="fas fa-stopwatch"></i>
+                            <span id="personalTimerText">30</span>s remaining
+                        </div>
+                    </div>
+
+                    <div class="turn-controls">
+                        <button id="nextTurnBtn" class="btn btn-secondary" style="display: none;">
+                            <i class="fas fa-arrow-right"></i> Next Player's Turn
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen results-screen" id="resultsScreen">
+            <div class="results-content">
+                <h2>🏆 Game Complete!</h2>
+                <div class="winner-announcement" id="winnerAnnouncement">
+                    <!-- Winner will be announced here -->
+                </div>
+                <div class="final-scores" id="finalScores">
+                    <!-- Final scores will be displayed here -->
+                </div>
+                <div class="game-actions">
+                    <button id="playAgainBtn" class="btn btn-primary">
+                        <i class="fas fa-redo"></i> Play Again
+                    </button>
+                    <button onclick="window.location.href='index-menu.html'" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Main Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <script>
+        // Local 2-Player Word Quest Game
+        class LocalMultiplayerGame {
+            constructor() {
+                this.players = [
+                    { name: '', score: 0, timeRemaining: 4 * 60, hintsUsed: 0 },
+                    { name: '', score: 0, timeRemaining: 4 * 60, hintsUsed: 0 }
+                ];
+                this.currentPlayerIndex = 0;
+                this.currentRound = 1;
+                this.totalRounds = 6;
+                this.currentAnswer = '';
+                this.currentWordLength = 4;
+                this.revealedPositions = [];
+                this.personalTimer = 0;
+                this.isUsingPersonalTimer = false;
+                this.questionsAnswered = 0;
+                
+                // Word sets
+                this.wordSets = {
+                    4: [
+                        { question: "Extremely angry or furious", answer: "RAGE" },
+                        { question: "A small piece of land surrounded by water", answer: "ISLE" },
+                        { question: "To capture or seize suddenly", answer: "GRAB" },
+                        { question: "A mythical creature that breathes fire", answer: "DRAGON" }
+                    ],
+                    5: [
+                        { question: "A person who travels to unknown places", answer: "SCOUT" },
+                        { question: "A valuable yellow metal", answer: "GOLD" },
+                        { question: "The ability to see future events", answer: "VISION" },
+                        { question: "To make something appear larger", answer: "ZOOM" }
+                    ],
+                    6: [
+                        { question: "A secret plan to achieve something illegal", answer: "SCHEME" },
+                        { question: "To vanish completely from sight", answer: "VANISH" },
+                        { question: "A person who creates sculptures", answer: "ARTIST" },
+                        { question: "A building where goods are manufactured", answer: "FACTORY" }
+                    ]
+                };
+                
+                this.initializeElements();
+                this.setupEventListeners();
+            }
+
+            initializeElements() {
+                // Get all elements
+                this.setupScreen = document.getElementById('setupScreen');
+                this.gameScreen = document.getElementById('gameScreen');
+                this.resultsScreen = document.getElementById('resultsScreen');
+                
+                this.player1NameInput = document.getElementById('player1Name');
+                this.player2NameInput = document.getElementById('player2Name');
+                this.startLocalBtn = document.getElementById('startLocalBtn');
+                
+                this.currentPlayerBanner = document.getElementById('currentPlayerBanner');
+                this.currentPlayerName = document.getElementById('currentPlayerName');
+                
+                this.questionText = document.getElementById('questionText');
+                this.letterCount = document.getElementById('letterCount');
+                this.hintsDisplay = document.getElementById('hintsDisplay');
+                this.answerInput = document.getElementById('answerInput');
+                this.submitAnswerBtn = document.getElementById('submitAnswerBtn');
+                this.getHintBtn = document.getElementById('getHintBtn');
+                this.foundBtn = document.getElementById('foundBtn');
+                this.personalTimerDisplay = document.getElementById('personalTimerDisplay');
+                this.personalTimerText = document.getElementById('personalTimerText');
+                this.nextTurnBtn = document.getElementById('nextTurnBtn');
+                
+                this.currentRound = document.getElementById('currentRound');
+                this.wordLength = document.getElementById('wordLength');
+                this.mainTimer = document.getElementById('mainTimer');
+                
+                // Player displays
+                this.player1NameDisplay = document.getElementById('player1NameDisplay');
+                this.player2NameDisplay = document.getElementById('player2NameDisplay');
+                this.player1Score = document.getElementById('player1Score');
+                this.player2Score = document.getElementById('player2Score');
+                this.player1Timer = document.getElementById('player1Timer');
+                this.player2Timer = document.getElementById('player2Timer');
+                this.player1Status = document.getElementById('player1Status');
+                this.player2Status = document.getElementById('player2Status');
+                this.player1Card = document.getElementById('player1Card');
+                this.player2Card = document.getElementById('player2Card');
+                
+                this.winnerAnnouncement = document.getElementById('winnerAnnouncement');
+                this.finalScores = document.getElementById('finalScores');
+                this.playAgainBtn = document.getElementById('playAgainBtn');
+                
+                this.notificationContainer = document.getElementById('notificationContainer');
+            }
+
+            setupEventListeners() {
+                this.startLocalBtn.addEventListener('click', () => this.startGame());
+                this.getHintBtn.addEventListener('click', () => this.getHint());
+                this.submitAnswerBtn.addEventListener('click', () => this.submitAnswer());
+                this.foundBtn.addEventListener('click', () => this.startPersonalTimer());
+                this.nextTurnBtn.addEventListener('click', () => this.nextTurn());
+                this.playAgainBtn.addEventListener('click', () => this.restartGame());
+                
+                this.answerInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.submitAnswer();
+                });
+                
+                this.answerInput.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+                    if (e.target.value.length > this.currentWordLength) {
+                        e.target.value = e.target.value.slice(0, this.currentWordLength);
+                    }
+                });
+            }
+
+            startGame() {
+                const player1Name = this.player1NameInput.value.trim();
+                const player2Name = this.player2NameInput.value.trim();
+                
+                if (!player1Name || !player2Name) {
+                    this.showNotification('Please enter both player names!', 'error');
+                    return;
+                }
+                
+                this.players[0].name = player1Name;
+                this.players[1].name = player2Name;
+                
+                this.player1NameDisplay.textContent = player1Name;
+                this.player2NameDisplay.textContent = player2Name;
+                
+                this.showScreen('game');
+                this.setupQuestion();
+                this.startTimer();
+                this.updatePlayerDisplay();
+                this.showNotification(`Game started! ${player1Name} goes first!`, 'success');
+            }
+
+            setupQuestion() {
+                // Calculate word length based on round
+                if (this.currentRound <= 2) {
+                    this.currentWordLength = 4;
+                } else if (this.currentRound <= 4) {
+                    this.currentWordLength = 5;
+                } else {
+                    this.currentWordLength = 6;
+                }
+
+                // Get random question
+                const questionsForLength = this.wordSets[this.currentWordLength];
+                if (questionsForLength && questionsForLength.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * questionsForLength.length);
+                    const questionData = questionsForLength[randomIndex];
+                    this.currentAnswer = questionData.answer.toUpperCase();
+                    this.questionText.textContent = questionData.question;
+                } else {
+                    this.currentAnswer = 'WORD'.padEnd(this.currentWordLength, 'S');
+                    this.questionText.textContent = `Find a ${this.currentWordLength}-letter word`;
+                }
+
+                // Reset question state
+                this.revealedPositions = [];
+                this.isUsingPersonalTimer = false;
+                this.personalTimer = 0;
+                
+                // Update UI
+                this.currentRound.textContent = `Round ${this.currentRound}/${this.totalRounds}`;
+                this.wordLength.textContent = `${this.currentWordLength} Letters`;
+                this.letterCount.textContent = this.currentWordLength;
+                this.answerInput.maxLength = this.currentWordLength;
+                this.answerInput.value = '';
+                this.answerInput.disabled = false;
+                this.submitAnswerBtn.disabled = false;
+                this.getHintBtn.disabled = false;
+                this.foundBtn.disabled = false;
+                this.foundBtn.textContent = '💡 Found! (Start 30s Timer)';
+                this.personalTimerDisplay.style.display = 'none';
+                this.nextTurnBtn.style.display = 'none';
+                
+                this.updateHintsDisplay();
+                this.updatePlayerDisplay();
+            }
+
+            getHint() {
+                if (this.revealedPositions.length >= this.currentWordLength - 1) {
+                    this.showNotification('No more hints available!', 'error');
+                    return;
+                }
+
+                const availablePositions = [];
+                for (let i = 0; i < this.currentWordLength; i++) {
+                    if (!this.revealedPositions.includes(i)) {
+                        availablePositions.push(i);
+                    }
+                }
+
+                if (availablePositions.length > 0) {
+                    const randomPosition = availablePositions[Math.floor(Math.random() * availablePositions.length)];
+                    this.revealedPositions.push(randomPosition);
+                    this.players[this.currentPlayerIndex].hintsUsed++;
+                    
+                    const revealedLetter = this.currentAnswer[randomPosition];
+                    this.updateHintsDisplay();
+                    this.updatePlayerDisplay();
+                    this.showNotification(`Hint: Position ${randomPosition + 1} is "${revealedLetter}"`, 'info');
+                }
+            }
+
+            startPersonalTimer() {
+                if (this.isUsingPersonalTimer) return;
+                
+                this.isUsingPersonalTimer = true;
+                this.personalTimer = 30;
+                this.foundBtn.disabled = true;
+                this.getHintBtn.disabled = true;
+                this.foundBtn.textContent = '⏰ 30s Timer Active';
+                this.personalTimerDisplay.style.display = 'block';
+                this.showNotification('30-second timer started! Submit quickly for bonus points!', 'info');
+            }
+
+            submitAnswer() {
+                const answer = this.answerInput.value.trim().toUpperCase();
+                
+                if (!answer) {
+                    this.showNotification('Please enter an answer!', 'error');
+                    return;
+                }
+
+                if (answer.length !== this.currentWordLength) {
+                    this.showNotification(`Answer must be exactly ${this.currentWordLength} letters long!`, 'error');
+                    return;
+                }
+
+                const isCorrect = answer === this.currentAnswer;
+                const currentPlayer = this.players[this.currentPlayerIndex];
+                let roundScore = 0;
+
+                if (isCorrect) {
+                    const correctLetters = this.currentWordLength - currentPlayer.hintsUsed;
+                    roundScore = correctLetters * 1000;
+                    
+                    if (this.isUsingPersonalTimer) {
+                        roundScore += 2000; // Found bonus
+                    }
+                    
+                    currentPlayer.score += roundScore;
+                    this.showNotification(`${currentPlayer.name} got it right! +${roundScore} points`, 'success');
+                } else {
+                    this.showNotification(`${currentPlayer.name} incorrect! The answer was: ${this.currentAnswer}`, 'error');
+                }
+
+                // Reset hints for current player
+                currentPlayer.hintsUsed = 0;
+
+                // Disable controls
+                this.answerInput.disabled = true;
+                this.submitAnswerBtn.disabled = true;
+                this.getHintBtn.disabled = true;
+                this.foundBtn.disabled = true;
+                
+                this.updatePlayerDisplay();
+                this.questionsAnswered++;
+
+                // Check if round is complete (both players answered)
+                if (this.questionsAnswered % 2 === 0) {
+                    // Both players have answered this round
+                    setTimeout(() => {
+                        if (this.currentRound < this.totalRounds) {
+                            this.currentRound++;
+                            this.questionsAnswered = 0;
+                            this.currentPlayerIndex = 0; // Start with player 1 again
+                            this.setupQuestion();
+                        } else {
+                            this.endGame();
+                        }
+                    }, 3000);
+                } else {
+                    // Show next turn button
+                    this.nextTurnBtn.style.display = 'block';
+                }
+            }
+
+            nextTurn() {
+                this.currentPlayerIndex = 1 - this.currentPlayerIndex; // Switch player
+                this.setupQuestion();
+                this.showNotification(`${this.players[this.currentPlayerIndex].name}'s turn!`, 'info');
+            }
+
+            startTimer() {
+                this.timerInterval = setInterval(() => {
+                    // Update current player's timer
+                    if (this.players[this.currentPlayerIndex].timeRemaining > 0) {
+                        this.players[this.currentPlayerIndex].timeRemaining--;
+                    }
+                    
+                    if (this.isUsingPersonalTimer && this.personalTimer > 0) {
+                        this.personalTimer--;
+                        this.personalTimerText.textContent = this.personalTimer;
+                        
+                        if (this.personalTimer <= 0) {
+                            this.submitAnswer();
+                        }
+                    }
+                    
+                    this.updateTimerDisplays();
+                    
+                    // Check if current player ran out of time
+                    if (this.players[this.currentPlayerIndex].timeRemaining <= 0) {
+                        this.showNotification(`${this.players[this.currentPlayerIndex].name} ran out of time!`, 'error');
+                        this.submitAnswer();
+                    }
+                }, 1000);
+            }
+
+            updateTimerDisplays() {
+                const currentPlayerTime = this.players[this.currentPlayerIndex].timeRemaining;
+                const minutes = Math.floor(currentPlayerTime / 60);
+                const seconds = currentPlayerTime % 60;
+                this.mainTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update individual player timers
+                const p1Time = this.players[0].timeRemaining;
+                const p1Minutes = Math.floor(p1Time / 60);
+                const p1Seconds = p1Time % 60;
+                this.player1Timer.textContent = `${p1Minutes}:${p1Seconds.toString().padStart(2, '0')}`;
+                
+                const p2Time = this.players[1].timeRemaining;
+                const p2Minutes = Math.floor(p2Time / 60);
+                const p2Seconds = p2Time % 60;
+                this.player2Timer.textContent = `${p2Minutes}:${p2Seconds.toString().padStart(2, '0')}`;
+            }
+
+            updateHintsDisplay() {
+                let pattern = '';
+                for (let i = 0; i < this.currentWordLength; i++) {
+                    if (this.revealedPositions.includes(i)) {
+                        pattern += `<span class="hint-letter revealed">${this.currentAnswer[i]}</span>`;
+                    } else {
+                        pattern += `<span class="hint-letter hidden">-</span>`;
+                    }
+                }
+                this.hintsDisplay.innerHTML = pattern;
+            }
+
+            updatePlayerDisplay() {
+                // Update scores
+                this.player1Score.textContent = this.players[0].score;
+                this.player2Score.textContent = this.players[1].score;
+                
+                // Update current player banner
+                this.currentPlayerName.textContent = this.players[this.currentPlayerIndex].name;
+                
+                // Highlight current player
+                this.player1Card.classList.toggle('current-player', this.currentPlayerIndex === 0);
+                this.player2Card.classList.toggle('current-player', this.currentPlayerIndex === 1);
+                
+                // Update status
+                this.player1Status.textContent = this.currentPlayerIndex === 0 ? 'Playing' : 'Waiting';
+                this.player2Status.textContent = this.currentPlayerIndex === 1 ? 'Playing' : 'Waiting';
+            }
+
+            endGame() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+                
+                this.showScreen('results');
+                
+                // Determine winner
+                const player1 = this.players[0];
+                const player2 = this.players[1];
+                
+                let winner, winnerText;
+                if (player1.score > player2.score) {
+                    winner = player1;
+                    winnerText = `🏆 ${player1.name} Wins!`;
+                } else if (player2.score > player1.score) {
+                    winner = player2;
+                    winnerText = `🏆 ${player2.name} Wins!`;
+                } else {
+                    winnerText = `🤝 It's a Tie!`;
+                }
+                
+                this.winnerAnnouncement.innerHTML = `<h2>${winnerText}</h2>`;
+                
+                this.finalScores.innerHTML = `
+                    <div class="player-final-score">
+                        <h3>${player1.name}</h3>
+                        <p>Final Score: ${player1.score} points</p>
+                        <p>Time Remaining: ${Math.floor(player1.timeRemaining / 60)}:${(player1.timeRemaining % 60).toString().padStart(2, '0')}</p>
+                    </div>
+                    <div class="player-final-score">
+                        <h3>${player2.name}</h3>
+                        <p>Final Score: ${player2.score} points</p>
+                        <p>Time Remaining: ${Math.floor(player2.timeRemaining / 60)}:${(player2.timeRemaining % 60).toString().padStart(2, '0')}</p>
+                    </div>
+                `;
+            }
+
+            restartGame() {
+                this.players = [
+                    { name: '', score: 0, timeRemaining: 4 * 60, hintsUsed: 0 },
+                    { name: '', score: 0, timeRemaining: 4 * 60, hintsUsed: 0 }
+                ];
+                this.currentPlayerIndex = 0;
+                this.currentRound = 1;
+                this.questionsAnswered = 0;
+                this.showScreen('setup');
+                this.player1NameInput.value = this.players[0].name || '';
+                this.player2NameInput.value = this.players[1].name || '';
+            }
+
+            showScreen(screenName) {
+                this.setupScreen.classList.remove('active');
+                this.gameScreen.classList.remove('active');
+                this.resultsScreen.classList.remove('active');
+                
+                if (screenName === 'setup') {
+                    this.setupScreen.classList.add('active');
+                } else if (screenName === 'game') {
+                    this.gameScreen.classList.add('active');
+                } else if (screenName === 'results') {
+                    this.resultsScreen.classList.add('active');
+                }
+            }
+
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                this.notificationContainer.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 4000);
+            }
+        }
+
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Local 2-Player Word Quest loaded');
+            window.localMultiplayerGame = new LocalMultiplayerGame();
+        });
+    </script>
+
+    <style>
+        .screen {
+            display: none;
+            min-height: 80vh;
+            padding: 2rem;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        .mode-badge {
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+        
+        .players-setup {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .player-setup {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .player-setup input {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .current-player-banner {
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+        }
+        
+        .players-score-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .player-score-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .player-score-card.current-player {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+        
+        .player-score-card h3 {
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .player-score-card .score {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #10b981;
+        }
+        
+        .player-score-card .timer {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        
+        .player-score-card .status {
+            margin-top: 0.5rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .turn-controls {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .player-final-score {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .player-final-score h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .players-setup, .players-score-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

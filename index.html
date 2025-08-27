@@ -3,154 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Quest - Multiplayer Word Game</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Word Quest - Choose Game Mode</title>
+    <meta http-equiv="refresh" content="0; url=index-menu.html">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+        .redirect-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="game-container">
-        <!-- Game Header -->
-        <header class="game-header">
-            <div class="logo">
-                <i class="fas fa-spell-check"></i>
-                <h1>Word Quest</h1>
-            </div>
-            <div class="round-info">
-                <span class="current-round">Round 1/6</span>
-                <span class="word-length">4 Letters</span>
-            </div>
-        </header>
-
-        <!-- Lobby Screen -->
-        <div class="screen lobby-screen active">
-            <div class="lobby-content">
-                <h2>Join Game Room</h2>
-                <div class="join-form">
-                    <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
-                    <input type="text" id="roomCode" placeholder="Room code (optional)" maxlength="6">
-                    <button id="joinGameBtn" class="btn btn-primary">
-                        <i class="fas fa-play"></i> Join Game
-                    </button>
-                    <button id="createRoomBtn" class="btn btn-secondary">
-                        <i class="fas fa-plus"></i> Create Room
-                    </button>
-                </div>
-                <div class="room-info" style="display: none;">
-                    <h3>Room: <span id="currentRoomCode"></span></h3>
-                    <p>Share this code with other players</p>
-                    <div class="players-list">
-                        <h4>Players in room:</h4>
-                        <ul id="playersList"></ul>
-                    </div>
-                    <button id="startGameBtn" class="btn btn-success" style="display: none;">
-                        <i class="fas fa-rocket"></i> Start Game
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Game Screen -->
-        <div class="screen game-screen">
-            <div class="game-content">
-                <!-- Question Section -->
-                <div class="question-section">
-                    <div class="question-card">
-                        <div class="question-header">
-                            <h3>Find the word:</h3>
-                            <div class="timer-container">
-                                <i class="fas fa-clock"></i>
-                                <span class="main-timer">4:00</span>
-                            </div>
-                        </div>
-                        <p class="question-text" id="questionText">A small domesticated carnivorous mammal</p>
-                        <div class="word-length-indicator">
-                            <span class="letter-count" id="letterCount">4</span> letters
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Players Section -->
-                <div class="players-section">
-                    <div class="players-grid" id="playersGrid">
-                        <!-- Player cards will be dynamically generated -->
-                    </div>
-                </div>
-
-                <!-- Answer Section -->
-                <div class="answer-section">
-                    <div class="hint-system">
-                        <button id="getHintBtn" class="btn btn-hint">
-                            <i class="fas fa-lightbulb"></i> Get Letter Hint
-                        </button>
-                        <div class="hints-display" id="hintsDisplay"></div>
-                    </div>
-                    
-                    <div class="answer-input">
-                        <input type="text" id="answerInput" placeholder="Enter your answer..." maxlength="10">
-                        <button id="submitAnswerBtn" class="btn btn-primary">
-                            <i class="fas fa-check"></i> Submit
-                        </button>
-                    </div>
-
-                    <div class="found-button-container">
-                        <button id="foundBtn" class="btn btn-found">
-                            <i class="fas fa-lightbulb"></i> Found! (Start 30s Timer)
-                        </button>
-                        <div class="personal-timer-display" id="personalTimerDisplay" style="display: none;">
-                            <i class="fas fa-stopwatch"></i>
-                            <span id="personalTimerText">30</span>s remaining
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Results Screen -->
-        <div class="screen results-screen">
-            <div class="results-content">
-                <h2>Round Results</h2>
-                <div class="correct-answer">
-                    <h3>Correct Answer: <span id="correctAnswer"></span></h3>
-                </div>
-                <div class="player-results" id="playerResults"></div>
-                <div class="next-round">
-                    <button id="nextRoundBtn" class="btn btn-primary">
-                        <i class="fas fa-arrow-right"></i> Next Round
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Final Results Screen -->
-        <div class="screen final-results-screen">
-            <div class="final-results-content">
-                <h2>🏆 Game Complete!</h2>
-                <div class="final-leaderboard" id="finalLeaderboard"></div>
-                <div class="game-actions">
-                    <button id="playAgainBtn" class="btn btn-primary">
-                        <i class="fas fa-redo"></i> Play Again
-                    </button>
-                    <button id="newRoomBtn" class="btn btn-secondary">
-                        <i class="fas fa-home"></i> Back to Lobby
-                    </button>
-                </div>
-            </div>
-        </div>
+    <div class="redirect-container">
+        <h2>🎮 Redirecting to Word Quest...</h2>
+        <p>If you're not redirected automatically, <a href="index-menu.html">click here</a></p>
     </div>
-
-    <!-- Notification System -->
-    <div class="notification-container" id="notificationContainer"></div>
-
-    <!-- Audio Elements -->
-    <audio id="correctSound" preload="auto">
-        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmAcBjuY3O/AciEELdns/7l1y3A8q9vkc7kYBjKM1++YV/XnBnGnldvksJAGGntgJpSFctYrCtF9ej6lzbW2f3HTdqc3m9b6jl0TDjmL2PHBdCYGLnyg5KVDJCUIGm+5LPOLVAr2elrqNw==" type="audio/wav">
-    </audio>
-    <audio id="incorrectSound" preload="auto">
-        <source src="data:audio/wav;base64,UklGRswDAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YagDAAC4uLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBAQEBAuLi4uLi4QEBA" type="audio/wav">
-    </audio>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="game-multiplayer.js"></script>
+    <script>
+        // Redirect to menu page
+        window.location.href = 'index-menu.html';
+    </script>
 </body>
 </html>

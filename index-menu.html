@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Quest - Choose Game Mode</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="menu-container">
+        <div class="main-menu">
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-spell-check"></i>
+                    <h1>Word Quest</h1>
+                </div>
+                <p class="tagline">Competitive Word Guessing Game</p>
+            </div>
+
+            <div class="game-modes">
+                <div class="mode-card single-player" onclick="startSinglePlayer()">
+                    <div class="mode-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2>Single Player</h2>
+                    <p>Play offline with AI opponents</p>
+                    <div class="mode-features">
+                        <span class="feature">✅ Play immediately</span>
+                        <span class="feature">🤖 Demo players included</span>
+                        <span class="feature">💻 No internet required</span>
+                    </div>
+                    <button class="mode-btn btn-primary">
+                        <i class="fas fa-play"></i> Start Playing
+                    </button>
+                </div>
+
+                <div class="mode-card multiplayer" onclick="startMultiplayer()">
+                    <div class="mode-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h2>Multiplayer</h2>
+                    <p>Play online with friends</p>
+                    <div class="mode-features">
+                        <span class="feature">🌐 Real-time online play</span>
+                        <span class="feature">👥 Room codes for friends</span>
+                        <span class="feature">⚡ Live synchronization</span>
+                    </div>
+                    <button class="mode-btn btn-multiplayer">
+                        <i class="fas fa-globe"></i> Play Online
+                    </button>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="game-info">
+                    <h3>🎯 How to Play</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-clock"></i>
+                            <span>4 minutes total time</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>1000 points per letter</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Get hints when stuck</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-sort-numeric-up"></i>
+                            <span>Words from 4-10 letters</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-info">
+                <p>Choose your preferred game mode and start your word quest adventure!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startSinglePlayer() {
+            // Redirect to single player version
+            window.location.href = 'single-player.html';
+        }
+
+        function startMultiplayer() {
+            // Check if server is available, otherwise show instructions
+            checkMultiplayerAvailability();
+        }
+
+        function checkMultiplayerAvailability() {
+            // Try to connect to local server first
+            fetch('http://localhost:3000')
+                .then(response => {
+                    // Server is running locally
+                    window.location.href = 'http://localhost:3000';
+                })
+                .catch(() => {
+                    // Server not running, show deployment options
+                    showMultiplayerOptions();
+                });
+        }
+
+        function showMultiplayerOptions() {
+            const modal = document.createElement('div');
+            modal.className = 'multiplayer-modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-globe"></i> Multiplayer Setup</h2>
+                        <button class="close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>To play multiplayer, you need to set up a server. Choose an option:</p>
+                        
+                        <div class="deployment-options">
+                            <div class="deploy-option" onclick="window.open('https://railway.app/', '_blank')">
+                                <i class="fas fa-rocket"></i>
+                                <h3>Deploy Online (Recommended)</h3>
+                                <p>Deploy to Railway for free online multiplayer</p>
+                                <span class="deploy-btn">Deploy Now</span>
+                            </div>
+                            
+                            <div class="deploy-option" onclick="showLocalInstructions()">
+                                <i class="fas fa-desktop"></i>
+                                <h3>Local Server</h3>
+                                <p>Run server on your computer</p>
+                                <span class="deploy-btn">View Instructions</span>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-instructions" style="display: none;" id="localInstructions">
+                            <h4>🔧 Quick Local Setup:</h4>
+                            <ol>
+                                <li>Install <a href="https://nodejs.org/" target="_blank">Node.js</a></li>
+                                <li>Open terminal in game folder</li>
+                                <li>Run: <code>npm install</code></li>
+                                <li>Run: <code>npm start</code></li>
+                                <li>Game available at: <code>http://localhost:3000</code></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function showLocalInstructions() {
+            const instructions = document.getElementById('localInstructions');
+            instructions.style.display = instructions.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Add click effects
+        document.addEventListener('DOMContentLoaded', () => {
+            const modeCards = document.querySelectorAll('.mode-card');
+            modeCards.forEach(card => {
+                card.addEventListener('mouseover', () => {
+                    card.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                card.addEventListener('mouseout', () => {
+                    card.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .menu-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
+
+        .main-menu {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo-section {
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo i {
+            font-size: 3rem;
+            color: #ffd700;
+        }
+
+        .logo h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+        }
+
+        .game-modes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .mode-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .mode-card:hover::before {
+            left: 100%;
+        }
+
+        .mode-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+
+        .mode-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .mode-card p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-features {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .mode-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-multiplayer {
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .info-item i {
+            color: #ffd700;
+        }
+
+        .footer-info {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Modal Styles */
+        .multiplayer-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            width: 90%;
+            color: white;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .deployment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .deploy-option {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .deploy-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .deploy-option i {
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+
+        .deploy-option h3 {
+            margin: 0.5rem 0;
+            color: white;
+        }
+
+        .deploy-option p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .deploy-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .quick-instructions {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .quick-instructions code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .quick-instructions a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .quick-instructions a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo h1 {
+                font-size: 2rem;
+            }
+
+            .mode-card {
+                padding: 1.5rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

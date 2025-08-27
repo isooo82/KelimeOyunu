@@ -2,7 +2,7 @@ class WordGame {
     constructor() {
         this.gameState = 'lobby'; // lobby, playing, results, finished
         this.currentRound = 0;
-        this.totalRounds = 6; // 2 rounds each for 4, 5, 6-10 letters
+        this.totalRounds = 14; // 2 rounds each for 4, 5, 6, 7, 8, 9, 10 letters (7 × 2 = 14 questions)
         this.gameTimer = 4 * 60; // 4 minutes in seconds (general timer - paused when someone finds)
         this.isGeneralTimerPaused = false; // Whether general timer is paused
         this.roundTimer = 0;
@@ -24,43 +24,57 @@ class WordGame {
                 { question: "Extremely angry or furious", answer: "RAGE" },
                 { question: "A small piece of land surrounded by water", answer: "ISLE" },
                 { question: "To capture or seize suddenly", answer: "GRAB" },
-                { question: "A mythical creature that breathes fire", answer: "DRAGON" }
+                { question: "Large feline found in Africa", answer: "LION" },
+                { question: "Frozen water", answer: "ICED" },
+                { question: "A young bear", answer: "CUBS" }
             ],
             5: [
                 { question: "A person who travels to unknown places", answer: "SCOUT" },
-                { question: "To make something appear larger", answer: "ZOOM" },
-                { question: "A valuable yellow metal", answer: "GOLD" },
-                { question: "The ability to see future events", answer: "VISION" }
+                { question: "A valuable yellow metal", answer: "GOLDS" },
+                { question: "To make something bigger", answer: "SCALE" },
+                { question: "Very happy emotion", answer: "BLISS" },
+                { question: "Ocean mammal with flippers", answer: "WHALE" },
+                { question: "Musical rhythm instrument", answer: "DRUMS" }
             ],
             6: [
                 { question: "A secret plan to achieve something illegal", answer: "SCHEME" },
                 { question: "A person who creates sculptures", answer: "ARTIST" },
                 { question: "To vanish completely from sight", answer: "VANISH" },
-                { question: "A building where goods are manufactured", answer: "FACTORY" }
+                { question: "A round object used in sports", answer: "SPHERE" },
+                { question: "A small, furry household pet", answer: "KITTEN" },
+                { question: "A place where books are kept", answer: "LIBRARY" }
             ],
             7: [
                 { question: "The feeling of great happiness", answer: "DELIGHT" },
                 { question: "To change from one form to another", answer: "CONVERT" },
-                { question: "A person who performs magic tricks", answer: "MAGICIAN" },
-                { question: "The quality of being honest and fair", answer: "JUSTICE" }
+                { question: "The quality of being honest and fair", answer: "JUSTICE" },
+                { question: "A person who teaches students", answer: "TEACHER" },
+                { question: "The season after winter", answer: "SPRINGS" },
+                { question: "A vehicle that travels in space", answer: "ROCKETS" }
             ],
             8: [
                 { question: "Something that cannot be explained by science", answer: "MYSTICAL" },
                 { question: "A person who studies ancient civilizations", answer: "EXPLORER" },
                 { question: "The process of creating something new", answer: "CREATION" },
-                { question: "A situation full of danger", answer: "PERILOUS" }
+                { question: "A person who designs buildings", answer: "ENGINEER" },
+                { question: "The study of living organisms", answer: "MEDICINE" },
+                { question: "A large body of water", answer: "SEAWATER" }
             ],
             9: [
-                { question: "The art of beautiful handwriting", answer: "CALLIGRAPHY" },
                 { question: "Something that brings good fortune", answer: "FORTUNATE" },
-                { question: "A person who studies the stars", answer: "ASTRONOMER" },
-                { question: "The state of being completely puzzled", answer: "BEWILDERED" }
+                { question: "The state of being completely puzzled", answer: "CONFUSION" },
+                { question: "A person who creates beautiful art", answer: "ARCHITECT" },
+                { question: "The science of numbers and calculations", answer: "ALGORITHM" },
+                { question: "A device used for communication", answer: "TELEPHONE" },
+                { question: "The process of learning new skills", answer: "EDUCATION" }
             ],
             10: [
                 { question: "The study of human behavior and mind", answer: "PSYCHOLOGY" },
                 { question: "Something extraordinary and remarkable", answer: "PHENOMENAL" },
-                { question: "A person who seeks truth through questioning", answer: "PHILOSOPHER" },
-                { question: "The art of persuasive speaking", answer: "ELOQUENCE" }
+                { question: "A person who seeks truth through questioning", answer: "PHILOSOPHY" },
+                { question: "The art of persuasive speaking", answer: "ELOQUENCES" },
+                { question: "A scientific study of the universe", answer: "ASTRONOMER" },
+                { question: "The process of making decisions", answer: "PROCEDURES" }
             ]
         };
         
@@ -75,6 +89,9 @@ class WordGame {
         this.initializeElements();
         this.setupEventListeners();
         this.initializeGame();
+        
+        // Make game instance globally accessible for debugging
+        window.wordQuestGame = this;
     }
 
     initializeElements() {
@@ -95,6 +112,12 @@ class WordGame {
         this.roomInfo = document.querySelector('.room-info');
         this.currentRoomCodeSpan = document.getElementById('currentRoomCode');
         this.playersList = document.getElementById('playersList');
+
+        // Debug: Check if critical elements exist
+        console.log('Element check:');
+        console.log('startGameBtn:', this.startGameBtn ? 'Found' : 'NOT FOUND');
+        console.log('roomInfo:', this.roomInfo ? 'Found' : 'NOT FOUND');
+        console.log('playersList:', this.playersList ? 'Found' : 'NOT FOUND');
 
         // Game elements
         this.mainTimer = document.querySelector('.main-timer');
@@ -127,14 +150,59 @@ class WordGame {
 
     setupEventListeners() {
         // Lobby events
-        this.joinGameBtn.addEventListener('click', () => this.joinGame());
-        this.createRoomBtn.addEventListener('click', () => this.createRoom());
-        this.startGameBtn.addEventListener('click', () => this.startGame());
+        this.joinGameBtn.addEventListener('click', () => {
+            console.log('Join Game button clicked');
+            this.joinGame();
+        });
+        this.createRoomBtn.addEventListener('click', () => {
+            console.log('Create Room button clicked');
+            this.createRoom();
+        });
+        if (this.startGameBtn) {
+            this.startGameBtn.addEventListener('click', (e) => {
+                console.log('Start Game button clicked');
+                console.log('Event object:', e);
+                console.log('Button element:', this.startGameBtn);
+                console.log('Button disabled?', this.startGameBtn.disabled);
+                console.log('Button visible?', this.startGameBtn.style.display);
+                e.preventDefault();
+                this.startGame();
+            });
+            console.log('Start Game button event listener attached successfully');
+        } else {
+            console.error('Start Game button not found during event listener setup');
+        }
 
         // Game events
-        this.getHintBtn.addEventListener('click', () => this.getHint());
-        this.submitAnswerBtn.addEventListener('click', () => this.submitAnswer());
-        this.foundBtn.addEventListener('click', () => this.startPersonalTimer());
+        if (this.getHintBtn) {
+            this.getHintBtn.addEventListener('click', () => {
+                console.log('Get Hint button clicked');
+                this.getHint();
+            });
+            console.log('Get Hint button event listener attached');
+        } else {
+            console.error('Get Hint button not found during event listener setup');
+        }
+
+        if (this.submitAnswerBtn) {
+            this.submitAnswerBtn.addEventListener('click', () => {
+                console.log('Submit Answer button clicked');
+                this.submitAnswer();
+            });
+            console.log('Submit Answer button event listener attached');
+        } else {
+            console.error('Submit Answer button not found during event listener setup');
+        }
+
+        if (this.foundBtn) {
+            this.foundBtn.addEventListener('click', () => {
+                console.log('Found button clicked');
+                this.startPersonalTimer();
+            });
+            console.log('Found button event listener attached');
+        } else {
+            console.error('Found button not found during event listener setup');
+        }
         this.answerInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.submitAnswer();
         });
@@ -175,11 +243,98 @@ class WordGame {
     }
 
     showScreen(screenName) {
+        console.log('showScreen called with:', screenName);
+        console.log('Available screens:', Object.keys(this.screens));
+        console.log('Target screen exists:', this.screens[screenName] ? 'YES' : 'NO');
+        
         Object.values(this.screens).forEach(screen => {
-            screen.classList.remove('active');
+            if (screen) {
+                screen.classList.remove('active');
+            }
         });
-        this.screens[screenName].classList.add('active');
+        
+        if (this.screens[screenName]) {
+            this.screens[screenName].classList.add('active');
+            console.log('Screen', screenName, 'is now active');
+        } else {
+            console.error('Screen not found:', screenName);
+        }
+        
         this.gameState = screenName;
+    }
+
+    setupGameEventListeners() {
+        console.log('setupGameEventListeners() called');
+        
+        // Re-find and attach game button event listeners
+        this.getHintBtn = document.getElementById('getHintBtn');
+        this.submitAnswerBtn = document.getElementById('submitAnswerBtn');
+        this.foundBtn = document.getElementById('foundBtn');
+        this.answerInput = document.getElementById('answerInput');
+        this.nextRoundBtn = document.getElementById('nextRoundBtn');
+        
+        console.log('Re-found game elements:');
+        console.log('getHintBtn:', this.getHintBtn ? 'Found' : 'NOT FOUND');
+        console.log('submitAnswerBtn:', this.submitAnswerBtn ? 'Found' : 'NOT FOUND');
+        console.log('foundBtn:', this.foundBtn ? 'Found' : 'NOT FOUND');
+        console.log('answerInput:', this.answerInput ? 'Found' : 'NOT FOUND');
+        console.log('nextRoundBtn:', this.nextRoundBtn ? 'Found' : 'NOT FOUND');
+
+        // Remove any existing event listeners by cloning elements
+        if (this.getHintBtn) {
+            const newGetHintBtn = this.getHintBtn.cloneNode(true);
+            this.getHintBtn.parentNode.replaceChild(newGetHintBtn, this.getHintBtn);
+            this.getHintBtn = newGetHintBtn;
+            
+            this.getHintBtn.addEventListener('click', (e) => {
+                console.log('Get Hint button clicked (re-attached)');
+                e.preventDefault();
+                this.getHint();
+            });
+            console.log('✅ Get Hint button re-attached');
+        }
+
+        if (this.submitAnswerBtn) {
+            const newSubmitBtn = this.submitAnswerBtn.cloneNode(true);
+            this.submitAnswerBtn.parentNode.replaceChild(newSubmitBtn, this.submitAnswerBtn);
+            this.submitAnswerBtn = newSubmitBtn;
+            
+            this.submitAnswerBtn.addEventListener('click', (e) => {
+                console.log('Submit Answer button clicked (re-attached)');
+                e.preventDefault();
+                this.submitAnswer();
+            });
+            console.log('✅ Submit Answer button re-attached');
+        }
+
+        if (this.foundBtn) {
+            const newFoundBtn = this.foundBtn.cloneNode(true);
+            this.foundBtn.parentNode.replaceChild(newFoundBtn, this.foundBtn);
+            this.foundBtn = newFoundBtn;
+            
+            this.foundBtn.addEventListener('click', (e) => {
+                console.log('Found button clicked (re-attached)');
+                e.preventDefault();
+                this.startPersonalTimer();
+            });
+            console.log('✅ Found button re-attached');
+        }
+
+        if (this.answerInput) {
+            const newAnswerInput = this.answerInput.cloneNode(true);
+            this.answerInput.parentNode.replaceChild(newAnswerInput, this.answerInput);
+            this.answerInput = newAnswerInput;
+            
+            this.answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    console.log('Enter key pressed in answer input');
+                    this.submitAnswer();
+                }
+            });
+            console.log('✅ Answer input re-attached');
+        }
+
+        console.log('setupGameEventListeners() completed');
     }
 
     showNotification(message, type = 'info') {
@@ -215,43 +370,55 @@ class WordGame {
         };
 
         this.players.set(this.playerId, this.currentPlayer);
+        
+        // Auto-add demo players for single player mode
+        this.addDemoPlayers();
+        
         this.updateLobbyUI();
-        this.showNotification('Room created successfully!', 'success');
+        this.showNotification('Room created! Click Start Game when ready.', 'success');
     }
 
     joinGame() {
+        console.log('joinGame called');
         const playerName = this.playerNameInput.value.trim();
+        console.log('Player name:', playerName);
+        
         if (!playerName) {
+            console.log('No player name provided');
             this.showNotification('Please enter your name', 'error');
             return;
         }
 
-        // For demo purposes, auto-create room if no code provided
-        const roomCode = this.roomCodeInput.value.trim() || this.generateRoomCode();
+        // For single player, create automatic room
+        this.roomCode = this.generateRoomCode();
+        this.isHost = true;
+        console.log('Created room code:', this.roomCode);
         
-        this.roomCode = roomCode;
         this.currentPlayer = {
             id: this.playerId,
             name: playerName,
             score: 0,
             hints: [],
             status: 'waiting',
-            isHost: this.players.size === 0,
+            isHost: true,
             individualTimer: 4 * 60, // Each player gets 4 minutes
             timerPaused: false
         };
 
         this.players.set(this.playerId, this.currentPlayer);
+        console.log('Added current player, total players:', this.players.size);
+        
+        // Auto-add demo players for single player mode
+        this.addDemoPlayers();
+        console.log('Added demo players, total players:', this.players.size);
+        
         this.updateLobbyUI();
-        this.showNotification('Joined room successfully!', 'success');
-
-        // Auto-add some demo players for testing
-        if (this.players.size === 1) {
-            this.addDemoPlayers();
-        }
+        this.showNotification('Game setup complete! Click Start Word Quest to begin.', 'success');
+        console.log('joinGame completed');
     }
 
     addDemoPlayers() {
+        console.log('addDemoPlayers called, current players:', this.players.size);
         const demoPlayers = [
             { name: 'Alice', id: 'demo1' },
             { name: 'Bob', id: 'demo2' },
@@ -259,6 +426,7 @@ class WordGame {
         ];
 
         demoPlayers.forEach(demo => {
+            console.log('Adding demo player:', demo.name);
             this.players.set(demo.id, {
                 id: demo.id,
                 name: demo.name,
@@ -271,12 +439,18 @@ class WordGame {
             });
         });
 
+        console.log('After adding demo players, total players:', this.players.size);
         this.updateLobbyUI();
     }
 
     updateLobbyUI() {
+        console.log('updateLobbyUI called, players count:', this.players.size);
         this.roomInfo.style.display = 'block';
-        this.currentRoomCodeSpan.textContent = this.roomCode;
+        
+        // Safely update room code if element exists
+        if (this.currentRoomCodeSpan) {
+            this.currentRoomCodeSpan.textContent = this.roomCode;
+        }
         
         this.playersList.innerHTML = '';
         this.players.forEach(player => {
@@ -285,13 +459,29 @@ class WordGame {
             this.playersList.appendChild(li);
         });
 
-        if (this.isHost && this.players.size >= 2) {
+        console.log('Is host:', this.isHost, 'Players size:', this.players.size);
+        if (this.isHost && this.players.size >= 1) {
+            console.log('Showing start game button');
             this.startGameBtn.style.display = 'block';
+            
+            // Add backup click handler directly to the button
+            this.startGameBtn.onclick = (e) => {
+                console.log('Start Game button clicked via onclick');
+                e.preventDefault();
+                this.startGame();
+            };
+            console.log('Backup onclick handler added to start button');
+        } else {
+            console.log('Not showing start game button - isHost:', this.isHost, 'players.size:', this.players.size);
         }
     }
 
     // Game Functions
     startGame() {
+        console.log('startGame() called!');
+        console.log('Current gameState:', this.gameState);
+        console.log('Available screens:', Object.keys(this.screens));
+        
         this.gameState = 'playing';
         this.currentRound = 1;
         this.gameTimer = 4 * 60;
@@ -304,21 +494,38 @@ class WordGame {
             player.score = 0; // Reset scores for new game
         });
         
+        console.log('About to show game screen...');
         this.showScreen('game');
+        console.log('Game screen shown, setting up round...');
         this.setupRound();
+        console.log('Round setup complete, re-attaching game event listeners...');
+        this.setupGameEventListeners();
+        console.log('Starting timer...');
         this.startGameTimer();
         this.showNotification('Game started! Each player has 4 minutes total. Good luck!', 'success');
+        console.log('startGame() completed!');
     }
 
-    setupRound() {
-        // Calculate word length based on round
+        setupRound() {
+        console.log('setupRound() called, current round:', this.currentRound);
+        
+        // Calculate word length based on round (2 rounds per word length)
         if (this.currentRound <= 2) {
-            this.currentWordLength = 4;
+            this.currentWordLength = 4;        // Rounds 1-2: 4 letters
         } else if (this.currentRound <= 4) {
-            this.currentWordLength = 5;
+            this.currentWordLength = 5;        // Rounds 3-4: 5 letters
+        } else if (this.currentRound <= 6) {
+            this.currentWordLength = 6;        // Rounds 5-6: 6 letters
+        } else if (this.currentRound <= 8) {
+            this.currentWordLength = 7;        // Rounds 7-8: 7 letters
+        } else if (this.currentRound <= 10) {
+            this.currentWordLength = 8;        // Rounds 9-10: 8 letters
+        } else if (this.currentRound <= 12) {
+            this.currentWordLength = 9;        // Rounds 11-12: 9 letters
         } else {
-            this.currentWordLength = 6 + (this.currentRound - 5);
+            this.currentWordLength = 10;       // Rounds 13-14: 10 letters
         }
+        console.log('Word length for this round:', this.currentWordLength);
 
         // Get random question for current word length
         const questionsForLength = this.wordSets[this.currentWordLength];
@@ -326,6 +533,8 @@ class WordGame {
             const randomIndex = Math.floor(Math.random() * questionsForLength.length);
             this.currentQuestion = questionsForLength[randomIndex];
             this.currentAnswer = this.currentQuestion.answer.toUpperCase();
+            console.log('Selected question:', this.currentQuestion.question);
+            console.log('Answer:', this.currentAnswer);
         } else {
             // Fallback question
             this.currentQuestion = { 
@@ -333,6 +542,7 @@ class WordGame {
                 answer: 'WORD'.padEnd(this.currentWordLength, 'S') 
             };
             this.currentAnswer = this.currentQuestion.answer.toUpperCase();
+            console.log('Using fallback question and answer:', this.currentAnswer);
         }
 
         // Reset player states for new round
@@ -341,34 +551,57 @@ class WordGame {
             player.status = 'thinking';
             player.foundWord = false;
             player.answer = '';
-            player.personalTimer = 0; // Individual timer for this player
-            player.isUsingPersonalTimer = false; // Whether player pressed "Found!"
-            player.hasAnswered = false; // Whether player has submitted an answer
-            player.timerPaused = false; // Reset pause state
-            // Note: individualTimer (4 minutes) continues across rounds
+            player.personalTimer = 0;
+            player.isUsingPersonalTimer = false;
+            player.hasAnswered = false;
+            player.timerPaused = false;
         });
         
         // Reset general timer pause state
         this.isGeneralTimerPaused = false;
 
-        // Initialize hints for each player with empty arrays (positions not revealed)
+        // Initialize hints for each player with empty arrays
         this.playerHints.clear();
         this.players.forEach(player => {
             this.playerHints.set(player.id, []);
         });
         this.playerAnswers.clear();
-        
+
+        console.log('Updating game UI...');
         this.updateGameUI();
+        console.log('Updating players grid...');
         this.updatePlayersGrid();
+        console.log('Resetting answer section...');
         this.resetAnswerSection();
+        console.log('setupRound() completed');
     }
 
     updateGameUI() {
-        this.currentRoundSpan.textContent = `Round ${this.currentRound}/${this.totalRounds}`;
-        this.wordLengthSpan.textContent = `${this.currentWordLength} Letters`;
-        this.questionText.textContent = this.currentQuestion.question;
-        this.letterCount.textContent = this.currentWordLength;
-        this.answerInput.maxLength = this.currentWordLength;
+        console.log('updateGameUI() called');
+        console.log('Elements check:');
+        console.log('currentRoundSpan:', this.currentRoundSpan ? 'Found' : 'NOT FOUND');
+        console.log('wordLengthSpan:', this.wordLengthSpan ? 'Found' : 'NOT FOUND');
+        console.log('questionText:', this.questionText ? 'Found' : 'NOT FOUND');
+        console.log('letterCount:', this.letterCount ? 'Found' : 'NOT FOUND');
+        console.log('answerInput:', this.answerInput ? 'Found' : 'NOT FOUND');
+        
+        if (this.currentRoundSpan) {
+            this.currentRoundSpan.textContent = `Round ${this.currentRound}/${this.totalRounds}`;
+        }
+        if (this.wordLengthSpan) {
+            this.wordLengthSpan.textContent = `${this.currentWordLength} Letters`;
+        }
+        if (this.questionText) {
+            this.questionText.textContent = this.currentQuestion.question;
+            console.log('Question set to:', this.currentQuestion.question);
+        }
+        if (this.letterCount) {
+            this.letterCount.textContent = this.currentWordLength;
+        }
+        if (this.answerInput) {
+            this.answerInput.maxLength = this.currentWordLength;
+        }
+        console.log('updateGameUI() completed');
     }
 
     updatePlayersGrid() {
@@ -501,13 +734,24 @@ class WordGame {
     }
 
     updateTimerDisplay() {
+        console.log('updateTimerDisplay() called, gameTimer:', this.gameTimer);
         const minutes = Math.floor(this.gameTimer / 60);
         const seconds = this.gameTimer % 60;
-        this.mainTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        const timeText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (this.mainTimer) {
+            this.mainTimer.textContent = timeText;
+            console.log('Timer updated to:', timeText);
+        } else {
+            console.error('mainTimer element not found!');
+        }
     }
 
     getHint() {
+        console.log('getHint() called!');
         const revealedPositions = this.playerHints.get(this.playerId) || [];
+        console.log('Current revealed positions:', revealedPositions);
+        console.log('Current word length:', this.currentWordLength);
         
         if (revealedPositions.length >= this.currentWordLength - 1) {
             this.showNotification('No more hints available!', 'error');
@@ -655,24 +899,57 @@ class WordGame {
         this.answerInput.disabled = true;
         this.updatePlayersGrid();
 
-        // Check if round should end
+        // For single player mode, auto-proceed after user answers
+        console.log('User answered, scheduling auto-progression to next round...');
         setTimeout(() => {
+            console.log('Auto-skipping to next round for single player mode...');
+            // Mark all demo players as answered automatically
+            this.players.forEach(player => {
+                if (player.id !== this.playerId && !player.hasAnswered) {
+                    player.hasAnswered = true;
+                    player.status = 'completed';
+                    player.answer = 'AUTO';
+                    // Give demo players random scores
+                    const randomScore = Math.floor(Math.random() * 800) + 200;
+                    player.score += randomScore;
+                    this.playerAnswers.set(player.id, {
+                        answer: 'AUTO',
+                        correct: true,
+                        score: randomScore,
+                        hintsUsed: 0
+                    });
+                }
+            });
             this.checkRoundEnd();
-        }, 2000);
+        }, 3000); // Auto-proceed after 3 seconds
     }
 
     checkRoundEnd() {
+        console.log('checkRoundEnd() called');
+        
         // Check if all players have answered
-        const allAnswered = Array.from(this.players.values()).every(player => player.hasAnswered);
+        const allPlayers = Array.from(this.players.values());
+        const answeredPlayers = allPlayers.filter(player => player.hasAnswered);
+        const allAnswered = allPlayers.every(player => player.hasAnswered);
+        
+        console.log('Total players:', allPlayers.length);
+        console.log('Players who answered:', answeredPlayers.length);
+        console.log('All answered?', allAnswered);
+        
+        allPlayers.forEach(player => {
+            console.log(`Player ${player.name}: hasAnswered = ${player.hasAnswered}, status = ${player.status}`);
+        });
         
         if (allAnswered) {
+            console.log('All players have answered! Moving to results...');
             this.showNotification('All players have answered! Moving to results...', 'success');
             setTimeout(() => {
                 this.endRound();
             }, 2000);
         } else {
             // Show how many players are still answering
-            const remainingPlayers = Array.from(this.players.values()).filter(player => !player.hasAnswered).length;
+            const remainingPlayers = allPlayers.filter(player => !player.hasAnswered).length;
+            console.log(`${remainingPlayers} players still need to answer`);
             this.showNotification(`Waiting for ${remainingPlayers} more player(s) to answer...`, 'info');
             
             // Auto-simulate demo players answering after some time for testing
@@ -681,16 +958,19 @@ class WordGame {
     }
 
     simulateDemoPlayersAnswering() {
+        console.log('simulateDemoPlayersAnswering() called');
         const demoPlayerIds = ['demo1', 'demo2', 'demo3'];
         
         demoPlayerIds.forEach((playerId, index) => {
             const player = this.players.get(playerId);
             if (player && !player.hasAnswered) {
+                console.log(`Scheduling demo player ${player.name} to answer in ${(index + 1) * 2} seconds`);
                 setTimeout(() => {
+                    console.log(`Demo player ${player.name} is answering...`);
                     // Simulate random answer
-                    const isCorrect = Math.random() > 0.5;
-                    const answer = isCorrect ? this.currentAnswer : 'FAKE';
-                    const score = isCorrect ? Math.max(5, 10 - Math.floor(Math.random() * 6)) : 0;
+                    const isCorrect = Math.random() > 0.6; // 60% chance of correct answer
+                    const answer = isCorrect ? this.currentAnswer : 'WRONG';
+                    const score = isCorrect ? Math.max(500, 1000 - Math.floor(Math.random() * 300)) : 0;
                     
                     player.hasAnswered = true;
                     player.answer = answer;
@@ -701,19 +981,51 @@ class WordGame {
                         answer: answer,
                         correct: isCorrect,
                         score: score,
-                        hintsUsed: Math.floor(Math.random() * 3)
+                        hintsUsed: Math.floor(Math.random() * 2)
                     });
                     
+                    console.log(`Demo player ${player.name} answered: ${answer} (${isCorrect ? 'Correct' : 'Wrong'})`);
                     this.updatePlayersGrid();
-                    this.checkRoundEnd();
-                }, (index + 1) * 3000); // Stagger the responses
+                    
+                    // Check if all players have answered
+                    setTimeout(() => {
+                        console.log('Checking round end after demo player answer...');
+                        this.checkRoundEnd();
+                    }, 500);
+                }, (index + 1) * 2000); // Faster responses - 2, 4, 6 seconds
             }
         });
     }
 
     endRound() {
+        console.log('endRound() called, current round:', this.currentRound, 'of', this.totalRounds);
         this.showScreen('results');
         this.displayRoundResults();
+        
+        // Show countdown for auto-progression
+        let countdown = 5;
+        const countdownInterval = setInterval(() => {
+            if (this.nextRoundBtn) {
+                this.nextRoundBtn.innerHTML = `<i class="fas fa-arrow-right"></i> Next Round (${countdown}s)`;
+            }
+            countdown--;
+            
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                console.log('Auto-proceeding to next round...');
+                this.nextRound();
+            }
+        }, 1000);
+        
+        // Also allow manual progression
+        if (this.nextRoundBtn) {
+            this.nextRoundBtn.style.display = 'block';
+            this.nextRoundBtn.onclick = () => {
+                console.log('Next Round button clicked manually');
+                clearInterval(countdownInterval);
+                this.nextRound();
+            };
+        }
     }
 
     displayRoundResults() {
@@ -747,19 +1059,31 @@ class WordGame {
 
     nextRound() {
         this.currentRound++;
+        console.log('nextRound() called, new round:', this.currentRound, 'total rounds:', this.totalRounds);
         
         if (this.currentRound > this.totalRounds) {
+            console.log('Game complete! Ending game...');
             this.endGame();
         } else {
+            console.log('Starting round', this.currentRound);
             // Resume timers for next round
             this.isGeneralTimerPaused = false;
             this.players.forEach(player => {
                 player.timerPaused = false;
+                player.hasAnswered = false; // Reset for next round
+                player.status = 'thinking';
+                player.answer = '';
+                player.personalTimer = 0;
+                player.isUsingPersonalTimer = false;
             });
+            
+            // Clear player answers for next round
+            this.playerAnswers.clear();
             
             this.showScreen('game');
             this.setupRound();
-            this.showNotification('Next round! Timers resumed.', 'info');
+            this.setupGameEventListeners(); // Re-attach event listeners for new round
+            this.showNotification(`Round ${this.currentRound} started! Timers resumed.`, 'info');
         }
     }
 
